@@ -33,24 +33,51 @@ public class WordbookFrame extends JFrame implements ActionListener {
     boolean showWord = true;
     int cursor = -1;
 
+    boolean flicking = false;
+
     public WordbookFrame() throws Exception {
         super("단어장");
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setBounds(0, 0, 510, 346);
+        setBounds(0, 0, 600, 350);
         setLocationRelativeTo(null);
 
         sideCollection = new SideCollectionList(this);
         wordHistoryTable = new WordHistoryTable();
         currentWordLabel = new NanumLabel("단어장을 선택해주세요!", 22f);
+
         JButton nextBtn = new NanumButton("다음 단어 볼래요", 12f);
         JButton memoBtn = new NanumButton("다시 안봐도 돼요", 12f);
+        JButton flickBtn = new NanumButton("깜빡이 모드 on", 12f);
 
         nextBtn.setActionCommand("next");
         nextBtn.addActionListener(this);
 
         memoBtn.setActionCommand("memorized");
         memoBtn.addActionListener(this);
+
+        flickBtn.addActionListener((e) -> {
+            flicking = !flicking;
+
+            if (getCurrentWord() == null) {
+                flicking = false;
+                JOptionPane.showMessageDialog(this, "선택된 단어장이 없는거 있습니다");
+                return;
+            }
+
+            if (flicking) {
+                new Thread(() -> {
+                    while (flicking) {
+                        try {
+                            Thread.sleep(1200);
+                            actionPerformed(e);
+                        } catch (Exception x) {
+                            x.printStackTrace();
+                        }
+                    }
+                }).start();
+            }
+        });
 
         add(sideCollection, BorderLayout.WEST);
         add(
@@ -67,6 +94,7 @@ public class WordbookFrame extends JFrame implements ActionListener {
                                                         .build())
                                         .add(
                                                 new FlowPanelBuilder()
+                                                        .add(flickBtn)
                                                         .add(nextBtn)
                                                         .add(memoBtn)
                                                         .build())
