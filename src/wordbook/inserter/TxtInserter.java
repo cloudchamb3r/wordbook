@@ -12,17 +12,20 @@ import wordbook.dao.WordDao;
 
 public class TxtInserter {
 
-    public static void loadTextData(File txtFile) throws Exception {
+    public static void loadTextDataIntoDb(File txtFile) throws Exception {
         try (FileReader fr = new FileReader(txtFile, StandardCharsets.UTF_8)) {
             try (BufferedReader br = new BufferedReader(fr)) {
-                int collectionId = new CollectionDao().create(txtFile.getName());
+                String filenameWihtoutExt = txtFile.getName().substring(0, txtFile.getName().length() - 4);
+                int collectionId = new CollectionDao().create(filenameWihtoutExt);
                 boolean word = true;
                 String line, wordString = null, meanString = null;
                 while ((line = br.readLine()) != null) {
-                    if (word)
+                    if (word) {
                         wordString = line;
-                    if (!word)
+                    }
+                    if (!word) {
                         meanString = line;
+                    }
 
                     if (wordString != null && meanString != null) {
                         wordString = wordString.trim();
