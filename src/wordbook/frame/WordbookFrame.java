@@ -16,12 +16,10 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
 import wordbook.dao.WordDao;
 import wordbook.dto.CollectionDto;
 import wordbook.dto.WordDto;
-import wordbook.frame.panel.BorderPanelBuilder;
 import wordbook.frame.panel.BoxPanelBuilder;
 import wordbook.frame.panel.FlowPanelBuilder;
 
@@ -32,7 +30,7 @@ public class WordbookFrame extends JFrame implements ActionListener {
 
     CollectionDto collection;
     List<WordDto> words;
-
+    boolean showWord = true;
     int cursor = -1;
 
     public WordbookFrame() throws Exception {
@@ -61,7 +59,7 @@ public class WordbookFrame extends JFrame implements ActionListener {
                         .add(wordHistoryTable)
                         .add(
                                 new BoxPanelBuilder()
-                                        .preferredSize(2000, 120)
+                                        .preferredSize(0, 120)
                                         .axis(BoxLayout.Y_AXIS)
                                         .add(
                                                 new FlowPanelBuilder()
@@ -93,7 +91,11 @@ public class WordbookFrame extends JFrame implements ActionListener {
             setTitle("단어장");
         }
         if (getCurrentWord() != null) {
-            currentWordLabel.setText(getCurrentWord().getWord());
+            if (showWord) {
+                currentWordLabel.setText(getCurrentWord().getWord());
+            } else {
+                currentWordLabel.setText(getCurrentWord().getMean());
+            }
         } else {
             currentWordLabel.setText("단어장을 선택해주세요");
         }
@@ -117,18 +119,30 @@ public class WordbookFrame extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        if (!showWord)
+            return;
+
         WordDto currentWord = getCurrentWord();
         if (currentWord == null) {
             JOptionPane.showMessageDialog(this, "선택된 단어장이 없는거 같아요.");
             return;
         }
+
+        new Thread(() -> {
+            try {
+                showWord = false;
+                Thread.sleep(500);
+                showWord = true;
+                refresh();
+            } catch (Exception x) {
+            }
+        }).start();
         if (e.getActionCommand().equals("memorized")) {
             currentWord.setMemorized(true);
             new WordDao().update(currentWord);
         }
         wordHistoryTable.add(currentWord);
-        cursor = (cursor + 1) % words.size();
-
         refresh();
+        cursor = (cursor + 1) % words.size();
     }
 }
