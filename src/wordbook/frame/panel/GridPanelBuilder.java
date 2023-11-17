@@ -3,31 +3,29 @@ package wordbook.frame.panel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
-public class BoxPanelBuilder {
+public class GridPanelBuilder {
     JPanel panel;
 
-    public BoxPanelBuilder(int axis) {
+    public GridPanelBuilder(int rows, int cols) {
         panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, axis));
-
+        panel.setLayout(new GridLayout(rows, cols));
     }
 
-    public BoxPanelBuilder add(Component component) {
+    public GridPanelBuilder add(Component component) {
         panel.add(component);
         return this;
     }
 
-
-    public BoxPanelBuilder preferredSize(int width, int height) {
+    public GridPanelBuilder preferredSize(int width, int height) {
         panel.setPreferredSize(new Dimension(width, height));
         return this;
     }
 
-    public BoxPanelBuilder background(Color color) {
+    public GridPanelBuilder background(Color color) {
         panel.setBackground(color);
         return this;
     }

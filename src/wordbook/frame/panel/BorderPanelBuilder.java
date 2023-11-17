@@ -11,6 +11,7 @@ public class BorderPanelBuilder {
 
     public BorderPanelBuilder() {
         panel = new JPanel();
+        panel.setLayout(new BorderLayout());
     }
 
     public BorderPanelBuilder addSouth(Component component) {
@@ -35,11 +36,6 @@ public class BorderPanelBuilder {
 
     public BorderPanelBuilder addCenter(Component component) {
         panel.add(component, BorderLayout.CENTER);
-        return this;
-    }
-
-    public BorderPanelBuilder axis(int axis) {
-        panel.setLayout(new BorderLayout());
         return this;
     }
 

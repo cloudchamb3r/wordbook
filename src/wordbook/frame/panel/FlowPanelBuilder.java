@@ -1,5 +1,6 @@
 package wordbook.frame.panel;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 
@@ -19,6 +20,11 @@ public class FlowPanelBuilder {
 
     public FlowPanelBuilder preferredSize(int width, int height) {
         panel.setPreferredSize(new Dimension(width, height));
+        return this;
+    }
+
+    public FlowPanelBuilder background(Color color) {
+        panel.setBackground(color);
         return this;
     }
 

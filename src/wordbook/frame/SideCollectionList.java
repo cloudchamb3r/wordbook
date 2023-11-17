@@ -54,8 +54,17 @@ public class SideCollectionList extends JScrollPane {
                             .getTransferData(DataFlavor.javaFileListFlavor);
                     for (File file : droppedFiles) {
                         if (file.getName().endsWith(".txt")) {
-                            TxtInserter.loadTextDataIntoDb(file);
-                            fetchAll();
+                            new Thread(() -> {
+                                try {
+                                    TxtInserter.loadTextDataIntoDb(file);
+                                    fetchAll(); 
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            }).start();
+                            // TxtInserter.loadTextDataIntoDb(file);
+                            // fetchAll();
+
                         }
                     }
                 } catch (Exception ex) {

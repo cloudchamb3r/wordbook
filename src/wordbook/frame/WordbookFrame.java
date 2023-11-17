@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import wordbook.dao.WordDao;
@@ -22,11 +23,13 @@ import wordbook.dto.CollectionDto;
 import wordbook.dto.WordDto;
 import wordbook.frame.panel.BoxPanelBuilder;
 import wordbook.frame.panel.FlowPanelBuilder;
+import wordbook.frame.panel.GridPanelBuilder;
+import wordbook.frame.panel.BorderPanelBuilder;
 
 public class WordbookFrame extends JFrame implements ActionListener {
     SideCollectionList sideCollection;
     WordHistoryTable wordHistoryTable;
-    NanumLabel currentWordLabel;
+    NanumLabel currentWordLabel, currentMeanLabel;
 
     CollectionDto collection;
     List<WordDto> words;
@@ -45,10 +48,14 @@ public class WordbookFrame extends JFrame implements ActionListener {
         sideCollection = new SideCollectionList(this);
         wordHistoryTable = new WordHistoryTable();
         currentWordLabel = new NanumLabel("단어장을 선택해주세요!", 22f);
+        currentMeanLabel = new NanumLabel(" ", 14f);
+
+        currentWordLabel.setHorizontalAlignment(JLabel.CENTER);
+        currentMeanLabel.setHorizontalAlignment(JLabel.CENTER);
 
         JButton nextBtn = new NanumButton("다음 단어 볼래요", 12f);
         JButton memoBtn = new NanumButton("다시 안봐도 돼요", 12f);
-        JButton flickBtn = new NanumButton("깜빡이 모드 on", 12f);
+        JButton flickBtn = new NanumButton("깜빡이 모드", 12f);
 
         nextBtn.setActionCommand("next");
         nextBtn.addActionListener(this);
@@ -80,29 +87,18 @@ public class WordbookFrame extends JFrame implements ActionListener {
         });
 
         add(sideCollection, BorderLayout.WEST);
-        add(
-                new BoxPanelBuilder()
-                        .axis(BoxLayout.Y_AXIS)
-                        .add(wordHistoryTable)
-                        .add(
-                                new BoxPanelBuilder()
-                                        .preferredSize(0, 120)
-                                        .axis(BoxLayout.Y_AXIS)
-                                        .add(
-                                                new FlowPanelBuilder()
-                                                        .add(currentWordLabel)
-                                                        .build())
-                                        .add(
-                                                new FlowPanelBuilder()
-                                                        .add(flickBtn)
-                                                        .add(nextBtn)
-                                                        .add(memoBtn)
-                                                        .build())
-                                        .build()
-
-                        )
-                        .build(),
-                BorderLayout.CENTER);
+        add(new BorderPanelBuilder()
+                .addCenter(wordHistoryTable)
+                .addSouth(new GridPanelBuilder(3, 1)
+                        .add(currentWordLabel)
+                        .add(currentMeanLabel)
+                        .add(new FlowPanelBuilder()
+                                .add(flickBtn)
+                                .add(nextBtn)
+                                .add(memoBtn)
+                                .build())
+                        .build())
+                .build());
         setVisible(true);
         refresh();
     }
@@ -121,8 +117,9 @@ public class WordbookFrame extends JFrame implements ActionListener {
         if (getCurrentWord() != null) {
             if (showWord) {
                 currentWordLabel.setText(getCurrentWord().getWord());
+                currentMeanLabel.setText(" ");
             } else {
-                currentWordLabel.setText(getCurrentWord().getMean());
+                currentMeanLabel.setText(getCurrentWord().getMean());
             }
         } else {
             currentWordLabel.setText("단어장을 선택해주세요");
