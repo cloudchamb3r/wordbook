@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 import javax.swing.JOptionPane;
 
-import wordbook.dao.CollectionDao;
+import wordbook.dao.WordbookDao;
 import wordbook.dao.WordDao;
 
 public class TxtInserter {
@@ -16,7 +16,7 @@ public class TxtInserter {
         try (FileReader fr = new FileReader(txtFile, StandardCharsets.UTF_8)) {
             try (BufferedReader br = new BufferedReader(fr)) {
                 String filenameWihtoutExt = txtFile.getName().substring(0, txtFile.getName().length() - 4);
-                int collectionId = new CollectionDao().create(filenameWihtoutExt);
+                int collectionId = new WordbookDao().create(filenameWihtoutExt);
                 boolean word = true;
                 String line, wordString = null, meanString = null;
                 while ((line = br.readLine()) != null) {

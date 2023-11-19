@@ -1,12 +1,11 @@
 package wordbook;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.Statement;
 
 import javax.swing.JOptionPane;
 
-import wordbook.frame.WordbookFrame;
+import wordbook.view.WordbookFrame;
 
 class Main {
     public static void main(String[] args) {
