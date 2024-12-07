@@ -1,25 +1,19 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import AddWordDialog from '@/contentscripts/AddWordDialog.tsx';
+import { useWordBookDialogStore } from "@/store/wordBookDialogStore";
+import { useWordListStore } from "@/store/wordListStore";
 
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === "openDialog") {
-        console.log('open dialog has been called');
-        createDialog();
-    }
-});
+const initWordBookComponent = () => {
+    const WORDBOOK_ID = 'wordbook__add_diagram';
 
-function createDialog() {
-    console.log('create dialog has been called')
-    if (document.getElementById('customDialog')) {
-        console.log('already existing..');
+    if (document.getElementById(WORDBOOK_ID)) {
         return; 
     }
     // append mount point 
-    console.log('append mount point');
     const dialog = document.createElement('div'); 
     
-    dialog.id = 'customDialog'; 
+    dialog.id = WORDBOOK_ID; 
     dialog.style.position = 'fixed'; 
     dialog.style.top = '50%'; 
     dialog.style.left = '50%'; 
@@ -28,11 +22,24 @@ function createDialog() {
 
     document.body.appendChild(dialog); 
 
-    // render react component
-    console.log('render react component');
     createRoot(dialog).render(
         <StrictMode>
             <AddWordDialog />
         </StrictMode>
     );
 }
+
+(function main() {
+    window.addEventListener('load', () => initWordBookComponent()); 
+    
+    chrome.runtime.onMessage.addListener((message) => {
+        const wbStore = useWordBookDialogStore.getState();
+        const wlStore = useWordListStore.getState(); 
+        if (message.action === "openDialog") {
+            (async()=> {
+                await wlStore.sync();
+                wbStore.openWithSelection();
+            })();
+        }
+    });
+})();

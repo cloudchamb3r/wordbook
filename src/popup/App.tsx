@@ -1,14 +1,25 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from '@/assets/react.svg'
 import viteLogo from '/vite.svg'
 import '@/popup/App.css'
+import { useWordListStore } from '@/store/wordListStore'
 
 function App() {
   const [count, setCount] = useState(0)
+  const wlStore = useWordListStore();
+  useEffect(() => {
+    wlStore.sync();
+  }, []);
 
+  
   return (
     <>
-      <h1>1</h1>
+      <h3>total word count : {wlStore.words.length}</h3>
+      {wlStore.words.map(w => (
+        <>
+          <h3>{w.word}</h3> | <h4>{w.meaning}</h4>
+        </>
+      ))}   
       <div>
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />

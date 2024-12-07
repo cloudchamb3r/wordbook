@@ -5,7 +5,8 @@
     "description": "A simple React app as a Chrome extension",
     "permissions": ["storage", "contextMenus", "tabs"],
     "background": {
-        "service_worker": "worker.js"
+        "service_worker": "worker.js", 
+        "type": "module"
     },
     "content_scripts": [
         {

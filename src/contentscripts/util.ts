@@ -1,4 +1,4 @@
-export function getSelectionText(): string | undefined {
+export function getSelectionText(): string {
     const activeEl = document.activeElement; 
     const isTextAreaElement = activeEl instanceof HTMLTextAreaElement;
     const isNumberInputElement = activeEl instanceof HTMLInputElement && 
@@ -6,5 +6,5 @@ export function getSelectionText(): string | undefined {
         typeof activeEl.selectionStart === 'number';
     return (isTextAreaElement || isNumberInputElement)
         ? activeEl.value.slice(activeEl.selectionStart!!, activeEl.selectionEnd!!)
-        : window.getSelection()?.toString();
+        : window.getSelection()?.toString() ?? "";
 }
